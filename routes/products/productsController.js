@@ -45,9 +45,20 @@ const updateProductById = async (productId, productData) => {
     }
 }
 
+// Delete product by id
+const deleteProductById = async (productId) => {
+    try {
+        const deleteProduct = await Product.findByIdAndDelete(productId)
+        return deleteProduct
+    } catch (error) {
+        throw error;
+    }
+}
+
 module.exports = {
     getAllProducts,
     getProductById,
     createProduct,
-    updateProductById
+    updateProductById,
+    deleteProductById
 }

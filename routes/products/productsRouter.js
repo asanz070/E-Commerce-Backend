@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const { getAllProducts, createProduct, getProductById, updateProductById } = require('../products/productsController');
+const { getAllProducts, createProduct, getProductById, updateProductById, deleteProductById } = require('../products/productsController');
 
 // Get all products
 router.get('/', async (request, response) => {
@@ -38,6 +38,16 @@ router.put('/:productId', async (request, response) => {
     try {
         const updateProduct = await updateProductById(request.params.productId, request.body)
         response.status(200).json({ message: 'success', payload: updateProduct })
+    } catch (error) {
+        response.status(400).json({ message: 'failure', payload: error })
+    }
+})
+
+// Delete product by id
+router.delete('/:productId', async (request, response) => {
+    try {
+        const deleteProduct = await deleteProductById(request.params.productId)
+        response.status(200).json({ message: 'success', payload: deleteProduct })
     } catch (error) {
         response.status(400).json({ message: 'failure', payload: error })
     }
