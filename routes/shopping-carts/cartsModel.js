@@ -6,8 +6,7 @@ const cartSchema = new mongoose.Schema(
         customer: {
             type: ObjectId,
             ref: 'Customer', // refference the customer model
-            required: true,
-            unique: true
+            required: true
         },
         items: [
             {
@@ -15,9 +14,18 @@ const cartSchema = new mongoose.Schema(
                     type: ObjectId,
                     ref: 'Product',
                     required: true
+                },
+                quantity: {
+                    type: Number,
+                    required: true,
+                    min: 1
                 }
             }
         ]
+    },
+
+    {
+        timestamps: true
     }
 )
 
