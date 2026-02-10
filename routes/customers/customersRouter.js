@@ -19,7 +19,7 @@ router.get('/:customerId', async (request, response) => {
         const customerId = await getCustomerById(request.params.customerId)
         response.status(200).json({ message: 'success', payload: customerId })
     } catch (error) {
-        response.status(404).json({ message: 'failure', payload: error })
+        response.status(404).json({ message: 'failure', payload: error.message })
     }
 })
 

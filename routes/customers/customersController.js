@@ -11,10 +11,10 @@ const getAllCustomer = async (customerData) => {
 }
 
 // Get customer by ID
-const getCustomerById = async (customerId) => {
+const getCustomerById = async (customerID) => {
     try {
-        const customerId = await Customer.findById(customerId)
-        return customerId
+        const personId = await Customer.findById(customerID)
+        return personId
     } catch (error) {
         throw error
     }
