@@ -6,8 +6,7 @@ const orderSchema = new mongoose.Schema(
         customer: {
             type: ObjectId,
             ref: 'Customer',
-            required: true,
-            unique: true
+            required: true
         },
         items: [
             {
@@ -25,13 +24,18 @@ const orderSchema = new mongoose.Schema(
         ],
         total: {
             type: Number,
-            required: true
+            required: true,
+            min: 0
         },
         status: {
             type: String,
             enum: ['pending', 'shipped', 'delivered', 'cancelled'],
             default: 'pending'
         }
+    },
+
+    {
+        timestamps: true
     }
 )
 
