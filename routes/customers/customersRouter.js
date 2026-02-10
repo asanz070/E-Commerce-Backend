@@ -46,8 +46,7 @@ router.put('/:customerId', async (request, response) => {
 // Delete Customer by ID
 router.delete('/:customerId', async (request, response) => {
     try {
-        const deleteCustomer = await deleteCustomerById(request.params.customerId
-        )
+        const deleteCustomer = await deleteCustomerById(request.params.customerId)
         response.status(200).json({ message: 'success', payload: deleteCustomer })
     } catch (error) {
         response.status(400).json({ message: 'failure', payload: error.message })
