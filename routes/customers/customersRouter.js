@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const { getAllCustomer, createCustomer, updateCustomerById } = require('./customersController');
+const { getAllCustomer, getCustomerById, createCustomer, updateCustomerById, deleteCustomerById } = require('./customersController');
 
 // GET All Customer
 router.get('/', async (request, response) => {
@@ -38,6 +38,17 @@ router.put('/:customerId', async (request, response) => {
     try {
         const updateCustomer = await updateCustomerById(request.params.customerId)
         response.status(200).json({ message: 'success', payload: updateCustomer })
+    } catch (error) {
+        response.status(400).json({ message: 'failure', payload: error })
+    }
+})
+
+// Delete Customer by ID
+router.delete('/:customerId', async (request, response) => {
+    try {
+        const deleteCustomer = await deleteCustomerById(request.params.customerId
+        )
+        response.status(200).json({ message: 'success', payload: deleteCustomer })
     } catch (error) {
         response.status(400).json({ message: 'failure', payload: error })
     }
