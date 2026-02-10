@@ -36,7 +36,7 @@ router.post('/', async (request, response) => {
 // Update Customer by ID
 router.put('/:customerId', async (request, response) => {
     try {
-        const updateCustomer = await updateCustomerById(request.params.customerId)
+        const updateCustomer = await updateCustomerById(request.params.customerId, request.body)
         response.status(200).json({ message: 'success', payload: updateCustomer })
     } catch (error) {
         response.status(400).json({ message: 'failure', payload: error })
@@ -50,7 +50,7 @@ router.delete('/:customerId', async (request, response) => {
         )
         response.status(200).json({ message: 'success', payload: deleteCustomer })
     } catch (error) {
-        response.status(400).json({ message: 'failure', payload: error })
+        response.status(400).json({ message: 'failure', payload: error.message })
     }
 })
 
