@@ -9,12 +9,14 @@ const getAllCarts = async (cartData) => {
             .populate('customer', 'name email') // populate customer details
             .populate('items.productId', 'name price'); // populate product details in items
 
-        // total calculation for each cart
-        findCart.forEach(cart => {
-            cart.total = cart.items.reduce((total, item) => {
-                return total + (item.productId.price * item.quantity);
+        // Calculation for total price
+        if (findCart) {
+            findCart.total = findCart.items.reduce((total, item) => {
+                let cartTotal = total + (item.productId.price * item.quantity);
+                return cartTotal;
             }, 0);
-        });
+        }
+
         return findCart
     } catch (error) {
         throw error
