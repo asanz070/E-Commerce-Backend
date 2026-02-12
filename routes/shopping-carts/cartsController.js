@@ -2,12 +2,12 @@
 const Cart = require('../shopping-carts/cartsModel')
 const Product = require('../products/productsModel');
 
-// Get all carts
-const getAllCarts = async (cartData) => {
+// Get carts for customer
+const getCartByCustomerId = async (customerId) => {
     try {
-        const findCart = await Cart.find(cartData)
+        const findCart = await Cart.findById({ customer: customerId })
             .populate('customer', 'name email') // populate customer details
-            .populate('items.productId', 'name price'); // populate product details in items
+            .populate('items.productId', 'name category price'); // populate product details in items
 
         // Calculation for total price
         if (findCart) {
@@ -23,13 +23,18 @@ const getAllCarts = async (cartData) => {
     }
 }
 
-// Get Cart by customer ID
-const getCartByCustomerId = async (customerId, productId, quantity) => {
+// Create the cart and add item to cart
+const addItemToCart = async (customerId, productId, quantity) => {
     try {
         const cart = await Cart.findOne({ customer: customerId });
 
         if (!cart) {
-            throw new Error('Cart not found for the customer');
+            cart = await Cart.create({
+                customer: customerId,
+                items: [{ productId, quantity }]
+            });
+        } else {
+
         }
         const product = await Product.findById(productId);
 
@@ -50,7 +55,42 @@ const getCartByCustomerId = async (customerId, productId, quantity) => {
     }
 }
 
+// Remove Item from Cart
+const removeItemFromCart = async (customerId, productId) => {
+    try {
+        const cart = await Cart.findOne({ customer: customerId })
+
+        if (!cart) {
+            throw new Error("Cart Not Found")
+        }
+
+        cart.items = cart.items.filter(
+            item => item.productId.toString() !== productId
+        );
+        await cart.save();
+
+        const newCart = await cart.populate('items.productId', 'name catergory price');
+        return newCart
+    } catch (error) {
+        throw error
+    }
+}
+
+// Update the cart by Id
+
+
+// Clear cart by id
+const clearCartById = async (cartId) => {
+    try {
+        const deleteCart = await Cart.findByIdAndDelete(cartId)
+        return deleteCart
+    } catch (error) {
+        throw error
+    }
+}
+
 module.exports = {
     getAllCarts,
-    getCartByCustomerId
+    addItemToCart,
+    clearCartById
 }
