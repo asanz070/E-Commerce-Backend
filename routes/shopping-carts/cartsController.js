@@ -34,22 +34,20 @@ const addItemToCart = async (customerId, productId, quantity) => {
                 items: [{ productId, quantity }]
             });
         } else {
+            const itemIndex = cart.items.findIndex(
+                item => item.productId.toString() === productId
+            );
 
+            if (itemIndex > -1) {
+                cart.items[itemIndex].quantity += quantity;
+            } else {
+                cart.items.push({ productId, quantity })
+            }
+            await cart.save();
         }
-        const product = await Product.findById(productId);
 
-        if (!product) {
-            throw new Error('Product not found');
-        }
-        const existingItemIndex = cart.items.findIndex(item => item.productId.toString() === productId);
-
-        if (existingItemIndex >= 0) {
-            cart.items[existingItemIndex].quantity += quantity;
-        } else {
-            cart.items.push({ productId, quantity });
-        }
-        await cart.save();
-        return cart;
+        const updatedCart = cart.populate('items.productId', 'name category price')
+        return updatedCart;
     } catch (error) {
         throw error
     }
@@ -76,13 +74,45 @@ const removeItemFromCart = async (customerId, productId) => {
     }
 }
 
-// Update the cart by Id
+// Update Item Quantity
+const updateItemQuantity = async (customerId, productId, quantity) => {
+    try {
+        const foundCart = await Cart.findOne({ customer: customerId })
 
+        if (!foundCart) {
+            throw new Error('Cart Not Found')
+        }
+
+        const item = foundCart.items.find(
+            item => item.productId.toString() === productId
+        );
+
+        if (!item) {
+            throw new Error('Item not found in cart')
+        }
+
+        item.quantity = quantity;
+        await foundCart.save()
+
+        const newCart = await foundCart.populate('items.productId', 'name, category price')
+        return newCart
+    } catch (error) {
+        throw error
+    }
+}
 
 // Clear cart by id
-const clearCartById = async (cartId) => {
+const clearCart = async (customerId) => {
     try {
-        const deleteCart = await Cart.findByIdAndDelete(cartId)
+        const deleteCart = await Cart.findOne({ customer: customerId })
+
+        if (!deleteCart) {
+            throw new Error("Cart Not Found")
+        }
+
+        deleteCart.items = []
+        await deleteCart.save()
+
         return deleteCart
     } catch (error) {
         throw error
@@ -90,7 +120,9 @@ const clearCartById = async (cartId) => {
 }
 
 module.exports = {
-    getAllCarts,
+    getCartByCustomerId,
     addItemToCart,
-    clearCartById
+    removeItemFromCart,
+    updateItemQuantity,
+    clearCart
 }
