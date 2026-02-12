@@ -26,6 +26,13 @@ const getCartByCustomerId = async (customerId) => {
 // Create the cart and add item to cart
 const addItemToCart = async (customerId, productId, quantity) => {
     try {
+
+        const product = await Product.findById(productId);
+
+        if (!product) {
+            throw new Error('Product Not Found')
+        }
+
         const cart = await Cart.findOne({ customer: customerId });
 
         if (!cart) {
