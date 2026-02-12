@@ -5,7 +5,7 @@ const Product = require('../products/productsModel');
 // Get carts for customer
 const getCartByCustomerId = async (customerId) => {
     try {
-        const findCart = await Cart.findById({ customer: customerId })
+        const findCart = await Cart.findOne({ customer: customerId })
             .populate('customer', 'name email') // populate customer details
             .populate('items.productId', 'name category price'); // populate product details in items
 
@@ -33,7 +33,7 @@ const addItemToCart = async (customerId, productId, quantity) => {
             throw new Error('Product Not Found')
         }
 
-        const cart = await Cart.findOne({ customer: customerId });
+        let cart = await Cart.findOne({ customer: customerId });
 
         if (!cart) {
             cart = await Cart.create({
@@ -53,7 +53,7 @@ const addItemToCart = async (customerId, productId, quantity) => {
             await cart.save();
         }
 
-        const updatedCart = cart.populate('items.productId', 'name category price')
+        const updatedCart = await cart.populate('items.productId', 'name category price')
         return updatedCart;
     } catch (error) {
         throw error
@@ -74,7 +74,7 @@ const removeItemFromCart = async (customerId, productId) => {
         );
         await cart.save();
 
-        const newCart = await cart.populate('items.productId', 'name catergory price');
+        const newCart = await cart.populate('items.productId', 'name category price');
         return newCart
     } catch (error) {
         throw error
@@ -101,7 +101,7 @@ const updateItemQuantity = async (customerId, productId, quantity) => {
         item.quantity = quantity;
         await foundCart.save()
 
-        const newCart = await foundCart.populate('items.productId', 'name, category price')
+        const newCart = await foundCart.populate('items.productId', 'name category price')
         return newCart
     } catch (error) {
         throw error
