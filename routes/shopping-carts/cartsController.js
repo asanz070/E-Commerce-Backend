@@ -9,15 +9,19 @@ const getCartByCustomerId = async (customerId) => {
             .populate('customer', 'name email') // populate customer details
             .populate('items.productId', 'name category price'); // populate product details in items
 
-        // Calculation for total price
-        if (findCart) {
-            findCart.total = findCart.items.reduce((total, item) => {
-                let cartTotal = total + (item.productId.price * item.quantity);
-                return cartTotal;
-            }, 0);
+        if (!findCart) {
+            return error
         }
 
-        return findCart
+        const cartObject = findCart.toObject();
+
+        // Calculation for total price
+        cartObject.total = cartObject.items.reduce((total, item) => {
+            let cartTotal = total + (item.productId.price * item.quantity);
+            return cartTotal;
+        }, 0);
+
+        return cartObject
     } catch (error) {
         throw error
     }
