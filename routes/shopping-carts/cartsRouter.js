@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const { getCartByCustomerId, addItemToCart, removeItemFromCart, updateItemQuantity, clearCart, clearCart } = require('./cartsController');
+const { getCartByCustomerId, addItemToCart, removeItemFromCart, updateItemQuantity, clearCart } = require('./cartsController');
 
 // Get cart by customer id
 router.get('/:customerId', async (request, response) => {
@@ -9,7 +9,7 @@ router.get('/:customerId', async (request, response) => {
         const cart = await getCartByCustomerId(request.params.customerId)
         response.status(200).json({ message: 'success', payload: cart })
     } catch (error) {
-        response.status(404).json({ message: 'failure', payload: error })
+        response.status(404).json({ message: 'failure', payload: error.message })
     }
 })
 
@@ -21,9 +21,9 @@ router.post('/:customerId/items', async (request, response) => {
             request.body.productId,
             request.body.quantity
         )
-        response.status(200).json({ message: 'success', payload: updatedCart })
+        response.status(201).json({ message: 'success', payload: updatedCart })
     } catch (error) {
-        response.status(400).json({ message: 'failure', payload: error })
+        response.status(400).json({ message: 'failure', payload: error.message })
     }
 })
 
@@ -32,11 +32,12 @@ router.put('/:customerId/update/:productId', async (request, response) => {
     try {
         const updateCartQuantity = await updateItemQuantity(
             request.params.customerId,
-            request.body.productId
+            request.params.productId,
+            request.body.quantity
         )
-        response.status(201).json({ message: 'success', payload: updateCartQuantity })
+        response.status(200).json({ message: 'success', payload: updateCartQuantity })
     } catch (error) {
-        response.status(400).json({ message: 'failure', payload: error })
+        response.status(400).json({ message: 'failure', payload: error.message })
     }
 })
 
@@ -47,9 +48,9 @@ router.delete('/:customerId/remove/:productId', async (request, response) => {
             request.params.customerId,
             request.params.productId
         )
-        response.status(201).json({ message: 'success', payload: removeItem })
+        response.status(200).json({ message: 'success', payload: removeItem })
     } catch (error) {
-        response.status(400).json({ message: 'failure', payload: error })
+        response.status(400).json({ message: 'failure', payload: error.message })
     }
 })
 
@@ -60,7 +61,7 @@ router.delete('/:customerId/clear', async (request, response) => {
         const cleanCart = await clearCart(request.params.customerId)
         response.status(200).json({ message: 'success', payload: cleanCart })
     } catch (error) {
-        response.status(404).json({ message: 'failure', payload: error })
+        response.status(404).json({ message: 'failure', payload: error.message })
     }
 })
 
