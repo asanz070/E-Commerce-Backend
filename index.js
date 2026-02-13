@@ -25,7 +25,7 @@ app.use('/api/customer', customerRouter)
 
 // Carts
 const cartRouter = require('./routes/shopping-carts/cartsRouter')
-app.use('/api/carts')
+app.use('/api/carts', cartRouter)
 
 app.listen(PORT, () => {
     console.log(`Server is listening on PORT: ${PORT}`);
