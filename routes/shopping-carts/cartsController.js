@@ -30,7 +30,7 @@ const addItemToCart = async (customerId, productId, quantity) => {
         const product = await Product.findById(productId);
 
         if (!product) {
-            throw new Error('Product Not Found')
+            throw new Error('Product not found');
         }
 
         let cart = await Cart.findOne({ customer: customerId });
@@ -66,7 +66,7 @@ const removeItemFromCart = async (customerId, productId) => {
         const cart = await Cart.findOne({ customer: customerId })
 
         if (!cart) {
-            throw new Error("Cart Not Found")
+            throw new Error('Cart not found')
         }
 
         cart.items = cart.items.filter(
