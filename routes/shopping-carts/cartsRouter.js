@@ -27,8 +27,21 @@ router.post('/:customerId/items', async (request, response) => {
     }
 })
 
+// Update cart quantity
+router.put('/:customerId/update/:productId', async (request, response) => {
+    try {
+        const updateCartQuantity = await updateItemQuantity(
+            request.params.customerId,
+            request.body.productId
+        )
+        response.status(201).json({ message: 'success', payload: updateCartQuantity })
+    } catch (error) {
+        response.status(400).json({ message: 'failure', payload: error })
+    }
+})
+
 // Remove item from cart
-router.delete('/:customerId/items/:productId', async (request, response) => {
+router.delete('/:customerId/remove/:productId', async (request, response) => {
     try {
         const removeItem = await removeItemFromCart(
             request.params.customerId,
@@ -40,18 +53,6 @@ router.delete('/:customerId/items/:productId', async (request, response) => {
     }
 })
 
-// Update cart quantity
-router.put('/:customerId/items/:productId', async (request, response) => {
-    try {
-        const updateCartQuantity = await updateItemQuantity(
-            request.params.customerId,
-            request.body.productId
-        )
-        response.status(201).json({ message: 'success', payload: updateCartQuantity })
-    } catch (error) {
-        response.status(400).json({ message: 'failure', payload: error })
-    }
-})
 
 // Clear Cart
 router.delete('/:customerId/clear', async (request, response) => {
