@@ -36,4 +36,9 @@ const updateOrderStatus = async (orderId, newStatus) => {
     }
 }
 
-module.exports = {}
+module.exports = {
+    placeOrder,
+    getCustomerOrders,
+    getOrderById,
+    updateOrderStatus
+}
