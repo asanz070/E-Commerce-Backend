@@ -68,7 +68,15 @@ const getCustomerOrders = async (customerData) => {
 // Get one specific order for customer
 const getOrderById = async (orderId) => {
     try {
+        const orderById = await Order.findOne(orderId)
+            .populate('customer', 'name email')
+            .populate('items.productId', 'name category price')
 
+        if (!orderById) {
+            throw error.message
+        }
+
+        return orderById
     } catch (error) {
         throw error
     }
@@ -77,7 +85,19 @@ const getOrderById = async (orderId) => {
 // Update order status
 const updateOrderStatus = async (orderId, newStatus) => {
     try {
+        const updateOrder = await Order.findByIdAndUpdate(
+            orderId,
+            { status: newStatus },
+            { new: true }
+        )
+            .populate('customer', 'name email')
+            .populate('items.productId', 'name category price')
 
+        if (!updateOrder) {
+            throw error.message
+        }
+
+        return updateOrder
     } catch (error) {
         throw error
     }
