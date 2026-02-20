@@ -68,12 +68,12 @@ const getCustomerOrders = async (customerData) => {
 // Get one specific order for customer
 const getOrderById = async (orderId) => {
     try {
-        const orderById = await Order.findOne(orderId)
+        const orderById = await Order.findById(orderId)
             .populate('customer', 'name email')
             .populate('items.productId', 'name category price')
 
         if (!orderById) {
-            throw error.message
+            throw new Error('Order Not Found')
         }
 
         return orderById

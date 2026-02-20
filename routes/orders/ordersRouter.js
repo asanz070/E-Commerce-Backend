@@ -14,7 +14,7 @@ router.post('/place/:customerId', async (request, response) => {
 })
 
 // Get Customer Orders
-router.get('/:customerId', async (request, response) => {
+router.get('/customer/:customerId', async (request, response) => {
     try {
         const customerData = {
             customerId: request.params.customerId,
@@ -31,7 +31,7 @@ router.get('/:customerId', async (request, response) => {
 })
 
 // Get order by id
-router.get('/order/:orderId', async (request, response) => {
+router.get('/:orderId', async (request, response) => {
     try {
         const orderId = await getOrderById(request.params.orderId)
         response.status(200).json({ message: 'success', payload: orderId })
