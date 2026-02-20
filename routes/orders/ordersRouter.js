@@ -4,7 +4,7 @@ const router = express.Router();
 const { placeOrder, getCustomerOrders, getOrderById, updateOrderStatus } = require('./ordersController')
 
 // Create an order using customer id
-router.post('/:customerId', async (request, response) => {
+router.post('/place/:customerId', async (request, response) => {
     try {
         const putOrder = await placeOrder(request.params.customerId)
         response.status(201).json({ message: 'success', payload: putOrder })
