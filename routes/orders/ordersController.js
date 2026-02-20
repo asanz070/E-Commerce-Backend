@@ -34,15 +34,32 @@ const placeOrder = async (customerId) => {
 }
 
 // Get orders for one customer
-const getCustomerOrders = async (customerId, status) => {
+const getCustomerOrders = async (customerData) => {
     try {
-        const findCart = await getCartByCustomerId(customerId)
-        
-        if (!findCart) {
-            throw new Error('Cart not found for the customer');
+        const orderQuery = {};
+
+        if (customerData.customerId) {
+            orderQuery.customer = customerData.customerId
         }
 
-        
+        if (customerData.status) {
+            orderQuery.status = customerData.status
+        }
+
+        const sortOrder = {};
+
+        if (customerData.sortBy) {
+            sortOrder[customerData.sortBy] = customerData.sortOrder || -1
+        } else {
+            sortOrder.createdAt = -1
+        }
+
+        const getOrder = await Order.find(orderQuery)
+            .sort(sortOrder)
+            .populate('customer', 'name email')
+            .populate('items.productId', 'name category price')
+
+        return getOrder
     } catch (error) {
         throw error
     }
