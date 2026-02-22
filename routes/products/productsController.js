@@ -3,8 +3,36 @@ const Product = require('../products/productsModel')
 // Get Product
 const getAllProducts = async (productData) => {
     try {
-        const findProducts = await Product.find(productData);
-        return findProducts
+        // const findProducts = await Product.find(productData);
+        // return findProducts
+
+        const productObject = {};
+
+        if (productData.category) {
+            productObject.category = productData.category
+        }
+
+        const minPrice = 0;
+        const maxPrice = Infinity;
+
+        productObject.price = {
+            $gte: productData.minPrice || minPrice,
+            $lte: productData.maxPrice || maxPrice,
+        }
+
+        if (productData.inStock === true) {
+            productObject.stock = { $gt: 0 }
+        }
+
+        const sortObject = {};
+
+        if (productData.sort) {
+            const sortOrder = productData.sortOrder === '1' ? -1 : 1;
+            sortObject[productData.sort] = sortOrder
+        }
+
+        const sortedProduct = await Product.find(productObject).sort(sortObject)
+        return sortedProduct
     } catch (error) {
         throw error;
 
